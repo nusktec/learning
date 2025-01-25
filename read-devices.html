@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Connected Devices</title>
+</head>
+<body>
+<h1>Connected Devices</h1>
+<button id="getDevices">List Devices</button>
+<div id="deviceList"></div>
+
+<script>
+    //start implementation.....
+    document.getElementById('getDevices').addEventListener('click', async () => {
+        try {
+            // Prompt user to select a USB device
+            await navigator.usb.requestDevice({
+                filters: [] // Add filters if necessary for specific devices
+            });
+
+            // Request permission to access USB devices
+            const devices =  await navigator.usb.getDevices();
+
+            const deviceList = document.getElementById('deviceList');
+            deviceList.innerHTML = '';
+
+            if (devices.length === 0) {
+                deviceList.innerHTML = '<li>No device(s) - plugged in</li>';
+                return;
+            }
+
+            devices.forEach(device => {
+                console.log(device)
+                // Create a container div for the device
+                const item = document.createElement('div');
+
+                // Set the innerHTML to parse HTML tags
+                item.innerHTML = `
+                                <p>
+                                <button onclick="loginBtn('${device.serialNumber}')">Login with</button> : ${device.productName} (${device.vendorId})</p>`;
+
+                // Append the item to the deviceList container
+                deviceList.appendChild(item);
+            });
+
+            //you can also log to get more details.
+            //but device serialNumber is the goat !!!!!!!!
+
+        } catch (error) {
+            alert('Error accessing devices: ' + error.message);
+        }
+    });
+
+    //implement login
+    function loginBtn(serialNumber){
+        //do if and else and backend logic here with the right serial number
+        window.location.href='user.html'
+    }
+</script>
+</body>
+</html>
